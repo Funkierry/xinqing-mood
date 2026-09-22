@@ -2,7 +2,10 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "心晴 · 情绪日记与自我关怀",
+  title: {
+    default: "心晴 · 情绪日记与自我关怀",
+    template: "%s｜心晴",
+  },
   description: "30 秒，记录此刻的心情",
 };
 

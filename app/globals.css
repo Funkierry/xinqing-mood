@@ -31,3 +31,58 @@ body {
   background: #bfdccf;
   color: #3f3a36;
 }
+
+button,
+a,
+input,
+textarea {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mood-range {
+  --range-color: #8fc7ae;
+  --range-progress: 44%;
+  height: 8px;
+  appearance: none;
+  border-radius: 999px;
+  outline: none;
+  background: linear-gradient(
+    to right,
+    var(--range-color) 0%,
+    var(--range-color) var(--range-progress),
+    #e8e0d9 var(--range-progress),
+    #e8e0d9 100%
+  );
+}
+
+.mood-range::-webkit-slider-thumb {
+  width: 25px;
+  height: 25px;
+  appearance: none;
+  cursor: pointer;
+  border: 4px solid #fffdf9;
+  border-radius: 50%;
+  background: var(--range-color);
+  box-shadow: 0 3px 10px rgba(63, 58, 54, 0.22);
+}
+
+.mood-range::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  border: 4px solid #fffdf9;
+  border-radius: 50%;
+  background: var(--range-color);
+  box-shadow: 0 3px 10px rgba(63, 58, 54, 0.22);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
