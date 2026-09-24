@@ -9,7 +9,7 @@ import { FormEvent, useEffect, useMemo, useState } from "react";
 import { EMOTIONS, TAGS } from "@/lib/mood-config";
 import { containsCrisisKeyword } from "@/lib/safety";
 import {
-  getCheckInStreak,
+  getCheckInDayCount,
   getMoodEntries,
   hasSustainedHighNegativeMood,
   saveMoodEntry,
@@ -32,7 +32,7 @@ function greetingForHour(hour: number) {
 export default function Home() {
   const router = useRouter();
   const [greeting, setGreeting] = useState("你好，此刻心情如何？");
-  const [streak, setStreak] = useState(0);
+  const [checkInDays, setCheckInDays] = useState(0);
   const [showCarePrompt, setShowCarePrompt] = useState(false);
   const [emotion, setEmotion] = useState<Emotion | null>(null);
   const [intensity, setIntensity] = useState(5);
@@ -44,7 +44,7 @@ export default function Home() {
   useEffect(() => {
     setGreeting(greetingForHour(new Date().getHours()));
     const entries = getMoodEntries();
-    setStreak(getCheckInStreak(entries));
+    setCheckInDays(getCheckInDayCount(entries));
     setShowCarePrompt(hasSustainedHighNegativeMood(entries));
   }, []);
 
@@ -86,7 +86,7 @@ export default function Home() {
 
     if (containsCrisisKeyword(note)) {
       setShowCrisisModal(true);
-      setStreak(getCheckInStreak());
+      setCheckInDays(getCheckInDayCount());
       setShowCarePrompt(hasSustainedHighNegativeMood());
       setIsSubmitting(false);
       return;
@@ -120,9 +120,12 @@ export default function Home() {
             >
               <BarChart3 className="h-4 w-4" />
             </Link>
-            <div className="flex items-center gap-1.5 rounded-full bg-white/85 px-3 py-2 text-sm font-semibold text-[#9A6D46] shadow-sm ring-1 ring-[#E9DED4]">
+            <div
+              className="flex items-center gap-1.5 rounded-full bg-white/85 px-3 py-2 text-sm font-semibold text-[#9A6D46] shadow-sm ring-1 ring-[#E9DED4]"
+              aria-label={`累计打卡 ${checkInDays} 天`}
+            >
               <Flame className="h-4 w-4 fill-[#F2B36F] text-[#E89C51]" />
-              {streak} 天
+              累计 {checkInDays} 天
             </div>
           </div>
         </div>
@@ -309,7 +312,7 @@ export default function Home() {
           {emotion ? "记录下来" : "先选择一种心情"}
         </motion.button>
         <p className="text-center text-xs leading-5 text-[#918A84]">
-          所有记录只保存在你的设备上
+          所有记录和累计天数只保存在你的设备上
         </p>
       </form>
 

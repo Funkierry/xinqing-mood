@@ -1,7 +1,10 @@
 import { NEGATIVE_EMOTIONS } from "@/lib/mood-config";
 import type { Emotion, MoodEntry, Tag } from "@/lib/types";
 
-const STORAGE_KEY = "xinqing:mood-entries:v1";
+const LEGACY_STORAGE_KEY = "xinqing:mood-entries:v1";
+const DEVICE_ID_KEY = "xinqing:device-id:v1";
+const DEVICE_STORAGE_PREFIX = "xinqing:mood-entries:v2";
+let inMemoryDeviceId: string | null = null;
 const EMOTIONS: Emotion[] = [
   "joy",
   "calm",
@@ -25,6 +28,44 @@ function canUseStorage() {
   return typeof window !== "undefined" && "localStorage" in window;
 }
 
+function createDeviceId() {
+  if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
+    return `device-${crypto.randomUUID()}`;
+  }
+
+  return `device-${Date.now().toString(36)}-${Math.random()
+    .toString(36)
+    .slice(2, 14)}`;
+}
+
+function isValidDeviceId(value: string | null) {
+  return Boolean(value && /^device-[a-zA-Z0-9-]{12,80}$/.test(value));
+}
+
+export function getOrCreateDeviceId() {
+  if (!canUseStorage()) return null;
+
+  try {
+    const existing = window.localStorage.getItem(DEVICE_ID_KEY);
+    if (isValidDeviceId(existing)) return existing;
+
+    const deviceId = createDeviceId();
+    window.localStorage.setItem(DEVICE_ID_KEY, deviceId);
+    inMemoryDeviceId = deviceId;
+    return deviceId;
+  } catch {
+    if (!inMemoryDeviceId) inMemoryDeviceId = createDeviceId();
+    return inMemoryDeviceId;
+  }
+}
+
+function getDeviceStorageKey() {
+  const deviceId = getOrCreateDeviceId();
+  return deviceId
+    ? `${DEVICE_STORAGE_PREFIX}:${deviceId}`
+    : LEGACY_STORAGE_KEY;
+}
+
 function isMoodEntry(value: unknown): value is MoodEntry {
   if (!value || typeof value !== "object") return false;
 
@@ -43,14 +84,25 @@ function isMoodEntry(value: unknown): value is MoodEntry {
 
 function persist(entries: MoodEntry[]) {
   if (!canUseStorage()) return;
-  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+  try {
+    window.localStorage.setItem(getDeviceStorageKey(), JSON.stringify(entries));
+  } catch {
+    // Storage may be unavailable in private browsing or after reaching quota.
+  }
 }
 
 export function getMoodEntries(): MoodEntry[] {
   if (!canUseStorage()) return [];
 
   try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
+    const storageKey = getDeviceStorageKey();
+    let raw = window.localStorage.getItem(storageKey);
+
+    if (!raw && storageKey !== LEGACY_STORAGE_KEY) {
+      raw = window.localStorage.getItem(LEGACY_STORAGE_KEY);
+      if (raw) window.localStorage.setItem(storageKey, raw);
+    }
+
     if (!raw) return [];
 
     const parsed: unknown = JSON.parse(raw);
@@ -127,6 +179,15 @@ export function getCheckInStreak(entries = getMoodEntries()) {
   }
 
   return streak;
+}
+
+export function getCheckInDayCount(entries = getMoodEntries()) {
+  return new Set(
+    entries
+      .map((entry) => new Date(entry.createdAt))
+      .filter((date) => !Number.isNaN(date.getTime()))
+      .map(toLocalDateKey),
+  ).size;
 }
 
 export function hasSustainedHighNegativeMood(entries = getMoodEntries()) {
