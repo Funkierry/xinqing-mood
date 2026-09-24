@@ -1,7 +1,8 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { Flame, HeartHandshake, Sparkles, X } from "lucide-react";
+import { BarChart3, Flame, HeartHandshake, Sparkles, X } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 
@@ -111,9 +112,18 @@ export default function Home() {
               {greeting}
             </h1>
           </div>
-          <div className="mt-1 flex shrink-0 items-center gap-1.5 rounded-full bg-white/85 px-3 py-2 text-sm font-semibold text-[#9A6D46] shadow-sm ring-1 ring-[#E9DED4]">
-            <Flame className="h-4 w-4 fill-[#F2B36F] text-[#E89C51]" />
-            {streak} 天
+          <div className="mt-1 flex shrink-0 items-center gap-2">
+            <Link
+              href="/insights"
+              className="flex h-9 w-9 items-center justify-center rounded-full bg-white/85 text-[#607D90] shadow-sm ring-1 ring-[#E2E4E3] transition hover:bg-white"
+              aria-label="查看情绪洞察"
+            >
+              <BarChart3 className="h-4 w-4" />
+            </Link>
+            <div className="flex items-center gap-1.5 rounded-full bg-white/85 px-3 py-2 text-sm font-semibold text-[#9A6D46] shadow-sm ring-1 ring-[#E9DED4]">
+              <Flame className="h-4 w-4 fill-[#F2B36F] text-[#E89C51]" />
+              {streak} 天
+            </div>
           </div>
         </div>
         <p className="mt-3 text-sm leading-6 text-[#77706A]">
