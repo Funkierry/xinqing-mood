@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 
+import { BrandMark } from "@/components/brand-mark";
 import { EMOTIONS, TAGS } from "@/lib/mood-config";
 import { containsCrisisKeyword } from "@/lib/safety";
 import {
@@ -105,9 +106,17 @@ export default function Home() {
       <header className="mb-7">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <p className="mb-1 text-sm font-medium tracking-[0.18em] text-[#8B8179]">
-              心晴 XINQING
-            </p>
+            <div className="mb-3 flex items-center gap-2.5">
+              <BrandMark className="h-9 w-9 shrink-0 drop-shadow-sm" title="心晴" />
+              <div className="leading-none">
+                <p className="text-[15px] font-semibold tracking-[0.15em] text-[#557865]">
+                  心晴
+                </p>
+                <p className="mt-1 text-[9px] font-semibold tracking-[0.24em] text-[#9A928B]">
+                  XINQING
+                </p>
+              </div>
+            </div>
             <h1 className="text-[27px] font-semibold leading-[1.35] text-ink">
               {greeting}
             </h1>

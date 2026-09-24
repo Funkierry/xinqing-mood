@@ -15,6 +15,7 @@ import {
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 
+import { BrandMark } from "@/components/brand-mark";
 import {
   getAverageIntensity,
   getCalendarDays,
@@ -267,7 +268,12 @@ export default function InsightsPage() {
       </Link>
 
       <header className="pb-7 pt-7">
-        <p className="text-sm font-medium tracking-[0.16em] text-[#8B8179]">情绪洞察</p>
+        <div className="flex items-center gap-2.5">
+          <BrandMark className="h-8 w-8 shrink-0" />
+          <p className="text-sm font-medium tracking-[0.14em] text-[#718477]">
+            心晴 · 情绪洞察
+          </p>
+        </div>
         <h1 className="mt-1 text-[29px] font-semibold leading-tight text-ink">
           看见感受，也看见变化
         </h1>

@@ -5,6 +5,7 @@ import { ArrowLeft, CheckCircle2, ChevronRight, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 
+import { BrandMark } from "@/components/brand-mark";
 import { PlanCard } from "@/components/relief/plan-card";
 import { ReliefPlayer } from "@/components/relief/relief-player";
 import { EMOTIONS, TAGS } from "@/lib/mood-config";
@@ -108,13 +109,18 @@ export default function ReliefPage() {
 
   return (
     <main className="mx-auto min-h-dvh w-full max-w-[480px] px-5 pb-12 pt-6">
-      <Link
-        href="/"
-        className="inline-flex items-center gap-2 rounded-full bg-white/75 px-3.5 py-2 text-sm font-semibold text-[#69615B] shadow-sm"
-      >
-        <ArrowLeft className="h-4 w-4" />
-        返回打卡
-      </Link>
+      <div className="flex items-center justify-between gap-4">
+        <Link
+          href="/"
+          className="inline-flex items-center gap-2 rounded-full bg-white/75 px-3.5 py-2 text-sm font-semibold text-[#69615B] shadow-sm"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          返回打卡
+        </Link>
+        <Link href="/" aria-label="心晴首页" className="rounded-xl shadow-sm">
+          <BrandMark className="h-9 w-9" />
+        </Link>
+      </div>
 
       <header className="pb-7 pt-8">
         <div className="flex items-start gap-4">
